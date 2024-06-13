@@ -1,5 +1,5 @@
 defmodule StarknetExplorerWeb.Endpoint do
-  use Sentry.PlugCapture
+  # use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :starknet_explorer
 
   # The session will be stored in the cookie and signed,
@@ -48,6 +48,6 @@ defmodule StarknetExplorerWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug Sentry.PlugContext
+  # plug Sentry.PlugContext
   plug StarknetExplorerWeb.Router
 end

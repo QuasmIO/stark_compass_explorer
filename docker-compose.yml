@@ -1,37 +1,51 @@
 version: '3.8'
+
 services:
-  juno:
-    container_name: 'juno_mainnet'
-    image: nethermind/juno
-    ports:
-        - 6060:6060
-    volumes:
-      - ./juno_files/:/var/lib/juno
-    command: >
-      --pending-poll-interval "60s"
-      --http-port 6060
-      --db-path /var/lib/juno
-      --eth-node "${ETH_NODE_URL}"
-      --network mainnet
   postgres:
-    container_name: madaraexplorer_db
-    image: postgres:14.6
-    ports:
-      - 127.0.0.1:5432:5432
+    image: postgres
+    container_name: stark_compass_db
     environment:
-      - POSTGRES_USER=madaraexplorer_user
-      - POSTGRES_PASSWORD=madaraexplorerlambda
-      - POSTGRES_DB=madaraexplorer_dev
-      - PGDATA=/var/lib/postgresql/data/pgdata
-    volumes:
-      - ./docker-data/postgres/data:/var/lib/postgresql/data/
+      POSTGRES_USER: madaraexplorer_user
+      POSTGRES_PASSWORD: madaraexplorerlambda
+      POSTGRES_DB: madaraexplorer_dev
+      PGDATA: /var/lib/postgresql/data/pgdata
+    networks:
+      - starknet_network
+    ports:
+      - "5432:5432"
+
+  madara:
+    image: madara  # Replace with your RPC service image
+    container_name: madara
+    networks:
+      - starknet_network
+    ports:
+      - "9944:9944"
+
+  app:
+    image: stark_compass
+    container_name: stark_compass
+    environment:
+      RPC_API_HOST: http://rpc_container:9944
+      TESTNET_RPC_API_HOST: http://rpc_container:9944
+      SEPOLIA_RPC_API_HOST: http://rpc_container:9944
+      DB_TYPE: postgresql
+      DATABASE_URL: ecto://madaraexplorer_user:madaraexplorerlambda@stark_compass_db:5432/madaraexplorer_dev
+      SECRET_KEY_BASE: CSoyxe6b5xblTs9MJQnAochifCsJAsRduNystDUCkAsuSVIYE9heBsplWfkiJdkT
+      ENABLE_GATEWAY_DATA: true
+      ENABLE_MAINNET_SYNC: true
+      ENABLE_TESTNET_SYNC: false
+      ENABLE_TESTNET2_SYNC: false
+      PHX_HOST: localhost
+      MIX_ENV: prod
+    networks:
+      - starknet_network
+    depends_on:
+      - postgres
+      - madara
+    ports:
+      - "4000:4000"
 
 networks:
-  default:
+  starknet_network:
     driver: bridge
-  close:
-    driver: bridge
-
-volumes:
-  pgadmin_data:
-

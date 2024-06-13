@@ -17,6 +17,7 @@ services:
   madara:
     image: madara  # Replace with your RPC service image
     container_name: madara
+    command: ["cargo", "run", "--release", "--", "--dev", "--rpc-cors=all"]
     networks:
       - starknet_network
     ports:
@@ -26,9 +27,9 @@ services:
     image: stark_compass
     container_name: stark_compass
     environment:
-      RPC_API_HOST: http://rpc_container:9944
-      TESTNET_RPC_API_HOST: http://rpc_container:9944
-      SEPOLIA_RPC_API_HOST: http://rpc_container:9944
+      RPC_API_HOST: http://madara:9944
+      TESTNET_RPC_API_HOST: http://madara:9944
+      SEPOLIA_RPC_API_HOST: http://madara:9944
       DB_TYPE: postgresql
       DATABASE_URL: ecto://madaraexplorer_user:madaraexplorerlambda@stark_compass_db:5432/madaraexplorer_dev
       SECRET_KEY_BASE: CSoyxe6b5xblTs9MJQnAochifCsJAsRduNystDUCkAsuSVIYE9heBsplWfkiJdkT

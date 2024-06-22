@@ -110,8 +110,8 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST")
-  port = String.to_integer(System.get_env("PORT") || "80")
+  host = System.get_env("PHX_HOST") || "madarastark.com"
+  port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :starknet_explorer, StarknetExplorerWeb.Endpoint,
     server: true,

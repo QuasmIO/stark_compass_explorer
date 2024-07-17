@@ -117,15 +117,8 @@ if config_env() == :prod do
 
   config :starknet_explorer, StarknetExplorerWeb.Endpoint,
     server: true,
-    url: [host: host, port: 443, scheme: "http"],
-    check_origin: [
-      "https://#{host}:#{port}",
-      "http://#{host}:#{port}",
-      "http://#{host}",
-      "https://#{host}",
-      "http://localhost:4000",
-      "http://localhost"
-    ],
+    url: [host: host, port: 443, scheme: "https"],
+    check_origin: false,
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
